@@ -1,0 +1,7 @@
+# Generated from fint-kafka 6.3.1 (commit 1ff1899) by a temporary test (FINT-119). Do not edit by hand.
+# Application defaults: novari.kafka.topic.org-id=test-org-id, novari.kafka.topic.domain-context=test-domain-context, spring.kafka.consumer.group-id=test
+case	suffix	group-id
+default		test
+suffix	-cache	test-cache
+suffix	instance-deleted-scrubber	testinstance-deleted-scrubber
+unique	<uuid>	teste79e6124-98f6-4252-b5ad-e8546f9aba8c
