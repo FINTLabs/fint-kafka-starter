@@ -1,0 +1,40 @@
+version: 2
+updates:
+    - package-ecosystem: gradle
+      directory: "/"
+      schedule:
+          interval: weekly
+          day: monday
+          time: "04:30"
+          timezone: "Europe/Oslo"
+      open-pull-requests-limit: 10
+      groups:
+          spring:
+              patterns:
+                  - "org.springframework*"
+          kotlin-and-tooling:
+              patterns:
+                  - "org.jetbrains.kotlin*"
+                  - "org.jetbrains.kotlinx.binary-compatibility-validator"
+                  - "org.jlleitschuh.gradle.ktlint"
+          minor-and-patch:
+              patterns:
+                  - "*"
+              update-types:
+                  - minor
+                  - patch
+      ignore:
+          - dependency-name: "org.springframework*"
+            update-types:
+                - "version-update:semver-major"
+    - package-ecosystem: github-actions
+      directory: "/"
+      schedule:
+          interval: weekly
+          day: monday
+          time: "04:30"
+          timezone: "Europe/Oslo"
+      groups:
+          github-actions:
+              patterns:
+                  - "*"
