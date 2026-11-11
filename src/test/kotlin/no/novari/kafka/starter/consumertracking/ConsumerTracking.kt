@@ -123,7 +123,8 @@ fun committed(offset: Long): (Event) -> Boolean = { it is OffsetsCommitted && it
 
 inline fun <reified T : Event> first(): (Event) -> Boolean = { it is T }
 
-fun ConsumerRecord<*, *>.toKeyValue() = KeyValue(key() as String?, value() as String?)
+// Values are written as JSON strings by the default JSON serializer, so "value1" is read back as value1.
+fun ConsumerRecord<*, *>.toKeyValue() = KeyValue(key() as String?, (value() as String?)?.removeSurrounding("\""))
 
 fun ConsumerRecords<*, *>.toKeyValues() = map { it.toKeyValue() }
 
