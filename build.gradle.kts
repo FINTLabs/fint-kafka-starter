@@ -60,9 +60,13 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-kafka")
     api("org.springframework.boot:spring-boot-starter-jackson")
     implementation("tools.jackson.module:jackson-module-kotlin")
+    // Optional: the health indicators are only registered when the application has actuator (spring-boot-health).
+    compileOnly("org.springframework.boot:spring-boot-health")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-kafka-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-actuator")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
