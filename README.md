@@ -88,6 +88,7 @@ The listener above uses `spring.kafka.consumer.group-id`. For a separate consume
 - [fint-kafka-starter vs Spring Kafka](docs/fint-kafka-starter-vs-spring-kafka.md): defaults that differ, and how to
   override them
 - [Migrating from fint-kafka](docs/migrating-from-fint-kafka.md)
+- [Architecture](docs/architecture.md): C4 component diagram of what the starter adds to an app
 
 ## Build
 
