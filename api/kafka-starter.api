@@ -46,3 +46,82 @@ public final class no/novari/kafka/starter/producer/OriginHeaderProducerIntercep
 public final class no/novari/kafka/starter/producer/OriginHeaderProducerInterceptor$Companion {
 }
 
+public final class no/novari/kafka/starter/topic/EntityCleanupFrequency : java/lang/Enum {
+	public static final field FREQUENT Lno/novari/kafka/starter/topic/EntityCleanupFrequency;
+	public static final field NORMAL Lno/novari/kafka/starter/topic/EntityCleanupFrequency;
+	public static final field RARE Lno/novari/kafka/starter/topic/EntityCleanupFrequency;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/novari/kafka/starter/topic/EntityCleanupFrequency;
+	public static fun values ()[Lno/novari/kafka/starter/topic/EntityCleanupFrequency;
+}
+
+public final class no/novari/kafka/starter/topic/EntityTopicConfig {
+	public fun <init> (Ljava/time/Duration;Ljava/time/Duration;Lno/novari/kafka/starter/topic/EntityCleanupFrequency;I)V
+	public synthetic fun <init> (Ljava/time/Duration;Ljava/time/Duration;Lno/novari/kafka/starter/topic/EntityCleanupFrequency;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCleanupFrequency ()Lno/novari/kafka/starter/topic/EntityCleanupFrequency;
+	public final fun getLastValueRetention ()Ljava/time/Duration;
+	public final fun getNullValueRetention ()Ljava/time/Duration;
+	public final fun getPartitions ()I
+}
+
+public final class no/novari/kafka/starter/topic/EntityTopicName : no/novari/kafka/starter/topic/TopicName {
+}
+
+public final class no/novari/kafka/starter/topic/EventCleanupFrequency : java/lang/Enum {
+	public static final field FREQUENT Lno/novari/kafka/starter/topic/EventCleanupFrequency;
+	public static final field NORMAL Lno/novari/kafka/starter/topic/EventCleanupFrequency;
+	public static final field RARE Lno/novari/kafka/starter/topic/EventCleanupFrequency;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/novari/kafka/starter/topic/EventCleanupFrequency;
+	public static fun values ()[Lno/novari/kafka/starter/topic/EventCleanupFrequency;
+}
+
+public final class no/novari/kafka/starter/topic/EventTopicConfig {
+	public fun <init> (Ljava/time/Duration;Lno/novari/kafka/starter/topic/EventCleanupFrequency;I)V
+	public synthetic fun <init> (Ljava/time/Duration;Lno/novari/kafka/starter/topic/EventCleanupFrequency;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCleanupFrequency ()Lno/novari/kafka/starter/topic/EventCleanupFrequency;
+	public final fun getPartitions ()I
+	public final fun getRetention ()Ljava/time/Duration;
+}
+
+public final class no/novari/kafka/starter/topic/EventTopicName : no/novari/kafka/starter/topic/TopicName {
+}
+
+public final class no/novari/kafka/starter/topic/KafkaTopics {
+	public final fun entity (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/novari/kafka/starter/topic/EntityTopicName;
+	public static synthetic fun entity$default (Lno/novari/kafka/starter/topic/KafkaTopics;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/novari/kafka/starter/topic/EntityTopicName;
+	public final fun entityPattern (Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;)Lno/novari/kafka/starter/topic/TopicPattern;
+	public static synthetic fun entityPattern$default (Lno/novari/kafka/starter/topic/KafkaTopics;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;ILjava/lang/Object;)Lno/novari/kafka/starter/topic/TopicPattern;
+	public final fun errorEvent (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/novari/kafka/starter/topic/EventTopicName;
+	public static synthetic fun errorEvent$default (Lno/novari/kafka/starter/topic/KafkaTopics;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/novari/kafka/starter/topic/EventTopicName;
+	public final fun errorEventPattern (Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;)Lno/novari/kafka/starter/topic/TopicPattern;
+	public static synthetic fun errorEventPattern$default (Lno/novari/kafka/starter/topic/KafkaTopics;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;ILjava/lang/Object;)Lno/novari/kafka/starter/topic/TopicPattern;
+	public final fun event (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/novari/kafka/starter/topic/EventTopicName;
+	public static synthetic fun event$default (Lno/novari/kafka/starter/topic/KafkaTopics;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/novari/kafka/starter/topic/EventTopicName;
+	public final fun eventPattern (Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;)Lno/novari/kafka/starter/topic/TopicPattern;
+	public static synthetic fun eventPattern$default (Lno/novari/kafka/starter/topic/KafkaTopics;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;Lno/novari/kafka/starter/topic/NamePattern;ILjava/lang/Object;)Lno/novari/kafka/starter/topic/TopicPattern;
+	public final fun newTopic (Lno/novari/kafka/starter/topic/EntityTopicName;Lno/novari/kafka/starter/topic/EntityTopicConfig;)Lorg/apache/kafka/clients/admin/NewTopic;
+	public final fun newTopic (Lno/novari/kafka/starter/topic/EventTopicName;Lno/novari/kafka/starter/topic/EventTopicConfig;)Lorg/apache/kafka/clients/admin/NewTopic;
+}
+
+public final class no/novari/kafka/starter/topic/NamePattern {
+	public static final field Companion Lno/novari/kafka/starter/topic/NamePattern$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class no/novari/kafka/starter/topic/NamePattern$Companion {
+	public final fun any ()Lno/novari/kafka/starter/topic/NamePattern;
+	public final fun anyOf ([Ljava/lang/String;)Lno/novari/kafka/starter/topic/NamePattern;
+}
+
+public abstract class no/novari/kafka/starter/topic/TopicName {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/novari/kafka/starter/topic/TopicPattern {
+	public final fun getRegex ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
