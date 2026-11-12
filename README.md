@@ -14,7 +14,20 @@ It is a thin layer on top of Spring Kafka and replaces [fint-kafka](https://gith
 ./gradlew check
 ```
 
-The public API is locked with an ABI dump in `api/`. After an intended API change, run `./gradlew apiDump` and commit the result.
+## Public API
+
+The public API is locked with an ABI (binary interface) dump in `api/kafka-starter.api`, made by
+[binary-compatibility-validator](https://github.com/Kotlin/binary-compatibility-validator). Libraries such as
+`fint-flyt-kafka` are compiled against one version of this starter, while the app may run with a newer one. A changed
+signature then fails at runtime with `NoSuchMethodError`, not at compile time. Many such changes look safe in Kotlin
+source, for example adding a parameter with a default value.
+
+- `./gradlew check` fails when the compiled public API differs from the dump.
+- After an intended API change, run `./gradlew apiDump` and commit the dump in the same pull request, so the change is
+  visible in review.
+- On a rebase conflict in the dump, do not merge it by hand. Run `./gradlew apiDump` again.
+- From 1.0.0: a removed or changed line in the dump needs a major version. New lines need a minor version.
+- `explicitApi()` is on, so public declarations need an explicit `public`. Keep everything apps do not use `internal`.
 
 ## Release
 
