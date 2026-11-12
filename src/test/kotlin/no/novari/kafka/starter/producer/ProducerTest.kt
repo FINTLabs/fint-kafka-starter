@@ -43,13 +43,13 @@ class ProducerTest(
     )
 
     class Listener {
-        val values = LinkedBlockingQueue<Pair<String, Dto>>()
+        val values = LinkedBlockingQueue<Pair<String?, Dto>>()
         val records = LinkedBlockingQueue<ConsumerRecord<String, String>>()
 
         @KafkaListener(topics = ["#{@producerTestTopic.name}"], groupId = "producer-test-dto")
         fun onDto(
             value: Dto,
-            @Header(KafkaHeaders.RECEIVED_KEY) key: String,
+            @Header(name = KafkaHeaders.RECEIVED_KEY, required = false) key: String?,
         ) = values.put(key to value)
 
         @KafkaListener(topics = ["#{@producerTestTopic.name}"], groupId = "producer-test-record")
@@ -94,7 +94,7 @@ class ProducerTest(
         assertThat(producersCreated.get()).isEqualTo(1)
         assertThat((1..4).map { listener.values.await("shared") })
             .containsExactlyInAnyOrderElementsOf((1..4).map { "shared$it" to Dto("name$it") })
-        val record = listener.records.await { it.key().startsWith("shared") }
+        val record = listener.records.await { it.key()?.startsWith("shared") == true }
         val originHeaders =
             record.headers().headers(
                 OriginHeaderProducerInterceptor.ORIGIN_APPLICATION_ID_RECORD_HEADER,
@@ -111,9 +111,16 @@ class ProducerTest(
         assertThat(listener.values.await("large")).isEqualTo("large" to Dto(name))
     }
 
+    @Test
+    fun `sends without a key`() {
+        template.send(producerTestTopic, Dto("no-key")).get()
+
+        assertThat(listener.values.await { it.second.name == "no-key" }).isEqualTo(null to Dto("no-key"))
+    }
+
     /** Skips records from other tests in the class. */
-    private fun LinkedBlockingQueue<Pair<String, Dto>>.await(keyPrefix: String) =
-        await { it.first.startsWith(keyPrefix) }
+    private fun LinkedBlockingQueue<Pair<String?, Dto>>.await(keyPrefix: String) =
+        await { it.first?.startsWith(keyPrefix) == true }
 
     private fun <T : Any> LinkedBlockingQueue<T>.await(predicate: (T) -> Boolean): T {
         while (true) {
