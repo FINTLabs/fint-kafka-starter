@@ -11,3 +11,9 @@ public fun <V : Any> KafkaTemplate<String, V>.send(
     key: String,
     value: V?,
 ): CompletableFuture<SendResult<String, V>> = send(topic.name, key, value)
+
+/** Sends [value] to [topic] without a key. A `null` value is a tombstone. */
+public fun <V : Any> KafkaTemplate<String, V>.send(
+    topic: TopicName,
+    value: V?,
+): CompletableFuture<SendResult<String, V>> = send(topic.name, value)
