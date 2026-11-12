@@ -2,6 +2,8 @@ package no.novari.kafka.starter.autoconfigure
 
 import no.novari.kafka.starter.NovariKafkaProperties
 import no.novari.kafka.starter.producer.OriginHeaderProducerInterceptor
+import no.novari.kafka.starter.topic.EventTopicConfig
+import no.novari.kafka.starter.topic.KafkaTopics
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.header.internals.RecordHeaders
@@ -9,6 +11,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.springframework.beans.factory.config.BeanExpressionContext
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration
@@ -17,6 +20,8 @@ import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -26,6 +31,7 @@ import org.springframework.kafka.support.converter.RecordMessageConverter
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer
 import tools.jackson.databind.PropertyNamingStrategies
 import tools.jackson.databind.json.JsonMapper
+import java.time.Duration
 
 class NovariKafkaAutoConfigurationTest {
     // ApplicationContextRunner does not run EnvironmentPostProcessors, so it runs as an initializer after the properties.
@@ -140,6 +146,45 @@ class NovariKafkaAutoConfigurationTest {
         runner
             .withPropertyValues("fint.kafka.enable-ssl=true")
             .run { assertThat(it.consumerConfig()).doesNotContainKey("security.protocol") }
+    }
+
+    @Test
+    fun `topic names resolve in SpEL`() {
+        runner
+            .withPropertyValues("novari.kafka.topic.org-id=afk-no", "novari.kafka.topic.domain-context=flyt")
+            .withUserConfiguration(UserTopicConfig::class.java)
+            .run {
+                val resolver = it.beanFactory.beanExpressionResolver!!
+                val spel = BeanExpressionContext(it.beanFactory, null)
+                assertThat(resolver.evaluate("#{@userTopic.name}", spel)).isEqualTo("afk-no.flyt.event.user")
+            }
+    }
+
+    @Test
+    fun `topics get 2 replicas by default`() {
+        runner.run {
+            val topics = it.getBean(KafkaTopics::class.java)
+            val topic = topics.newTopic(topics.event("x", "afk-no", "flyt"), EventTopicConfig(Duration.ofDays(1)))
+            assertThat(topic.replicationFactor()).isEqualTo(2.toShort())
+        }
+    }
+
+    @Test
+    fun `fails at startup with the property name on an invalid topic default`() {
+        runner
+            .withPropertyValues("novari.kafka.topic.org-id=afk.no")
+            .run {
+                assertThat(it).hasFailed()
+                assertThat(it.startupFailure).rootCause().hasMessageStartingWith(
+                    "Topic name part 'novari.kafka.topic.org-id' ('afk.no') contains '.'.",
+                )
+            }
+    }
+
+    @Configuration
+    class UserTopicConfig {
+        @Bean
+        fun userTopic(topics: KafkaTopics) = topics.event("user")
     }
 
     data class Dto(

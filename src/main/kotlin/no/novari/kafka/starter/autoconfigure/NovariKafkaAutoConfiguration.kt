@@ -1,6 +1,7 @@
 package no.novari.kafka.starter.autoconfigure
 
 import no.novari.kafka.starter.NovariKafkaProperties
+import no.novari.kafka.starter.topic.KafkaTopics
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -37,4 +38,9 @@ internal class NovariKafkaAutoConfiguration {
     @ConditionalOnMissingBean
     fun kafkaRecordMessageConverter(jsonMapper: JsonMapper): RecordMessageConverter =
         JacksonJsonMessageConverter(jsonMapper)
+
+    @Bean
+    @ConditionalOnMissingBean
+    fun kafkaTopics(properties: NovariKafkaProperties) =
+        KafkaTopics(properties.topic.orgId, properties.topic.domainContext, properties.topic.defaultReplicas)
 }

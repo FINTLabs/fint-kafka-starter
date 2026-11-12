@@ -8,3 +8,6 @@ novari:
     application-id: test-application
     topic:
       org-id: test-org-id
+      domain-context: test-domain-context
+      # The embedded broker has one node.
+      default-replicas: 1
