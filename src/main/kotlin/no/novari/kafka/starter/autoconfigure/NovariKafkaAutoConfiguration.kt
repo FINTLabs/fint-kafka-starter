@@ -1,6 +1,8 @@
 package no.novari.kafka.starter.autoconfigure
 
 import no.novari.kafka.starter.NovariKafkaProperties
+import no.novari.kafka.starter.consumer.GroupIdReporter
+import no.novari.kafka.starter.consumer.KafkaGroupIds
 import no.novari.kafka.starter.topic.KafkaTopics
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.springframework.boot.autoconfigure.AutoConfiguration
@@ -9,7 +11,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration
 import org.springframework.boot.kafka.autoconfigure.DefaultKafkaProducerFactoryCustomizer
 import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties
 import org.springframework.context.annotation.Bean
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.support.converter.JacksonJsonMessageConverter
 import org.springframework.kafka.support.converter.RecordMessageConverter
@@ -43,4 +47,18 @@ internal class NovariKafkaAutoConfiguration {
     @ConditionalOnMissingBean
     fun kafkaTopics(properties: NovariKafkaProperties) =
         KafkaTopics(properties.topic.orgId, properties.topic.domainContext, properties.topic.defaultReplicas)
+
+    /** The bean name is used in SpEL: `#{@kafkaGroupIds.withSuffix('-cache')}`. */
+    @Bean
+    @ConditionalOnMissingBean
+    fun kafkaGroupIds(kafkaProperties: KafkaProperties) = KafkaGroupIds(kafkaProperties.consumer.groupId)
+
+    @Bean
+    fun novariKafkaGroupIdReporter(
+        // Registered by @EnableKafka in Boot's KafkaAnnotationDrivenConfiguration, which IntelliJ does not see.
+        @Suppress("SpringJavaInjectionPointsAutowiringInspection")
+        registry: KafkaListenerEndpointRegistry,
+        groupIds: KafkaGroupIds,
+        properties: NovariKafkaProperties,
+    ) = GroupIdReporter(registry, groupIds, properties.consumer.groupIdCheck)
 }
