@@ -1,0 +1,20 @@
+# Lines marked "fint default" are set explicitly until FINT-120 sets them as property defaults.
+spring:
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    client-id: test-application-test-org-id # fint default: <application-id>-<org-id>
+    admin:
+      modify-topic-configs: true # fint default
+    consumer:
+      group-id: test
+      auto-offset-reset: earliest # fint default
+      properties:
+        "[fetch.max.bytes]": 3145728 # fint default
+        "[max.partition.fetch.bytes]": 3145728 # fint default
+    producer:
+      properties:
+        "[max.request.size]": 3145728 # fint default
+    listener:
+      observation-enabled: true # fint default
+    template:
+      observation-enabled: true # fint default

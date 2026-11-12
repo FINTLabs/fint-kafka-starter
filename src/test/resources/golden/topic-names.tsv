@@ -1,0 +1,15 @@
+# Generated from fint-kafka 6.3.1 (commit 1ff1899) by a temporary test (FINT-119). Do not edit by hand.
+# Application defaults: novari.kafka.topic.org-id=test-org-id, novari.kafka.topic.domain-context=test-domain-context, spring.kafka.consumer.group-id=test
+kind	org-id	domain-context	name	topic
+entity	<default>	<default>	elev-fravar	test-org-id.test-domain-context.entity.elev-fravar
+event	<default>	<default>	instance-received	test-org-id.test-domain-context.event.instance-received
+error-event	<default>	<default>	instance-receival-error	test-org-id.test-domain-context.event.error.instance-receival-error
+entity	afk-no	<default>	elev-fravar	afk-no.test-domain-context.entity.elev-fravar
+event	afk-no	<default>	instance-received	afk-no.test-domain-context.event.instance-received
+error-event	afk-no	<default>	instance-receival-error	afk-no.test-domain-context.event.error.instance-receival-error
+entity	<default>	flyt	elev-fravar	test-org-id.flyt.entity.elev-fravar
+event	<default>	flyt	instance-received	test-org-id.flyt.event.instance-received
+error-event	<default>	flyt	instance-receival-error	test-org-id.flyt.event.error.instance-receival-error
+entity	afk-no	flyt	elev-fravar	afk-no.flyt.entity.elev-fravar
+event	afk-no	flyt	instance-received	afk-no.flyt.event.instance-received
+error-event	afk-no	flyt	instance-receival-error	afk-no.flyt.event.error.instance-receival-error
