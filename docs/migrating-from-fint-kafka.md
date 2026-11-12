@@ -198,11 +198,16 @@ class UserPublisher(
 }
 ```
 
-- `send(TopicName, key, value)` is an extension in `no.novari.kafka.starter.producer`. A `null` value is a tombstone.
-  `kafkaTemplate.send(topic.name, key, value)` does the same.
+- `send(TopicName, key, value)` and `send(TopicName, value)`, without a key, are extensions in
+  `no.novari.kafka.starter.producer`. A `null` value is a tombstone. `kafkaTemplate.send(topic.name, key, value)` does
+  the same.
+- For headers of your own, send a `ProducerRecord`:
+  `kafkaTemplate.send(ProducerRecord(topic.name, key, value).apply { headers().add("my-header", bytes) })`.
 - All templates share one producer. fint-kafka 6 made one per template.
 - Values are JSON, written with the app's Jackson 3 `JsonMapper`. Move Jackson 2 `ObjectMapper` customization to
-  Jackson 3, or the JSON on the topic changes.
+  Jackson 3, or the JSON on the topic changes. Jackson 3 also writes some values differently with the same config, for
+  example `java.util.Date` as `2026-11-12T10:15:30.123Z` instead of `2026-11-12T10:15:30.123+00:00`. Jackson 2 reads
+  both, but check consumers that parse the JSON themselves.
 - Every record still gets the header `origin.application.id`.
 - `send` is asynchronous, as before. Failed sends are logged by Spring's `LoggingProducerListener`.
 
@@ -230,6 +235,8 @@ class UserListener(
   `ClassCastException` when it reads it.
 - Use `@Payload(required = false)` and a nullable type on entity topics, where `null` is a tombstone. Leave both out on
   event topics.
+- **Not `Any?` for a tombstone.** With `@Payload(required = false) value: Any?`, a tombstone gives the `ConsumerRecord`,
+  not `null`. Use the value's type, or leave out the value parameter when only the headers are used.
 - `@Header(KafkaHeaders.RECEIVED_TOPIC)`, `RECEIVED_PARTITION`, `OFFSET` and `@Headers` give the rest of the record.
 - A listener starts with the app and stops when it shuts down. Nothing calls `start()`.
 
@@ -360,6 +367,9 @@ fun kafkaErrorHandler(): CommonErrorHandler = DefaultErrorHandler(FixedBackOff(0
 
 Conversion errors, such as invalid JSON, are never retried.
 
+In a recoverer and in `setBackOffFunction`, `record.value()` is the raw JSON `String`, not the listener's type. Read
+headers from `record.headers()`.
+
 ### Different handling per listener
 
 Set the error handler in a `ContainerPostProcessor` bean and name it on the listener:
@@ -476,6 +486,12 @@ For a wrapper library:
 - Depend on `no.novari:kafka-starter` with `api`, so apps get it through the wrapper.
 - Build on Boot's `KafkaTemplate`, container factory and `KafkaAdmin`. Do not create producer or consumer factories.
 - Leave the `CommonErrorHandler` bean to the app, or declare it with `@ConditionalOnMissingBean`.
+- Auto-configure the wrapper (`AutoConfiguration.imports`), so apps need no component scan.
+- For a header with its own type, register a `Converter<ByteArray, YourType>` bean. Listeners then take
+  `@Header("your-header") value: YourType`. Write the converter as a class: Spring cannot read the types of a lambda,
+  and fails at startup.
+- `KafkaTopics` and the topic names have internal constructors. Test code that needs them with a Spring context, where
+  `KafkaTopics` is a bean.
 - Copies of fint-kafka 6 code, such as `InstanceFlowErrorHandlerConfigurationStepBuilder` in `fint-flyt-kafka`, are
   deleted.
 - The starter's public API is checked for binary compatibility, so a wrapper built against an older minor version
