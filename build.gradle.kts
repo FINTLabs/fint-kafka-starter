@@ -42,6 +42,10 @@ ktlint {
     version = libs.versions.ktlint.cli
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))
 
