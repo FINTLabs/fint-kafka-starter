@@ -37,6 +37,11 @@ public final class no/novari/kafka/starter/consumer/KafkaGroupIds {
 	public final fun withSuffix (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class no/novari/kafka/starter/producer/KafkaTemplateExtensionsKt {
+	public static final fun send (Lorg/springframework/kafka/core/KafkaTemplate;Lno/novari/kafka/starter/topic/TopicName;Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun send (Lorg/springframework/kafka/core/KafkaTemplate;Lno/novari/kafka/starter/topic/TopicName;Ljava/lang/String;Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+}
+
 public final class no/novari/kafka/starter/producer/OriginHeaderProducerInterceptor : org/apache/kafka/clients/producer/ProducerInterceptor {
 	public static final field Companion Lno/novari/kafka/starter/producer/OriginHeaderProducerInterceptor$Companion;
 	public static final field ORIGIN_APPLICATION_ID_PRODUCER_CONFIG Ljava/lang/String;
