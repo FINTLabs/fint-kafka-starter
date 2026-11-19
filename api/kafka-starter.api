@@ -1,0 +1,48 @@
+public final class no/novari/kafka/starter/NovariKafkaProperties {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Lno/novari/kafka/starter/NovariKafkaProperties$Topic;Lno/novari/kafka/starter/NovariKafkaProperties$Consumer;)V
+	public synthetic fun <init> (Ljava/lang/String;Lno/novari/kafka/starter/NovariKafkaProperties$Topic;Lno/novari/kafka/starter/NovariKafkaProperties$Consumer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getApplicationId ()Ljava/lang/String;
+	public final fun getConsumer ()Lno/novari/kafka/starter/NovariKafkaProperties$Consumer;
+	public final fun getTopic ()Lno/novari/kafka/starter/NovariKafkaProperties$Topic;
+}
+
+public final class no/novari/kafka/starter/NovariKafkaProperties$Consumer {
+	public fun <init> ()V
+	public fun <init> (Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;)V
+	public synthetic fun <init> (Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getGroupIdCheck ()Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;
+}
+
+public final class no/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck : java/lang/Enum {
+	public static final field FAIL Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;
+	public static final field OFF Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;
+	public static final field WARN Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;
+	public static fun values ()[Lno/novari/kafka/starter/NovariKafkaProperties$GroupIdCheck;
+}
+
+public final class no/novari/kafka/starter/NovariKafkaProperties$Topic {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDefaultReplicas ()I
+	public final fun getDomainContext ()Ljava/lang/String;
+	public final fun getOrgId ()Ljava/lang/String;
+}
+
+public final class no/novari/kafka/starter/producer/OriginHeaderProducerInterceptor : org/apache/kafka/clients/producer/ProducerInterceptor {
+	public static final field Companion Lno/novari/kafka/starter/producer/OriginHeaderProducerInterceptor$Companion;
+	public static final field ORIGIN_APPLICATION_ID_PRODUCER_CONFIG Ljava/lang/String;
+	public static final field ORIGIN_APPLICATION_ID_RECORD_HEADER Ljava/lang/String;
+	public fun <init> ()V
+	public fun close ()V
+	public fun configure (Ljava/util/Map;)V
+	public fun onAcknowledgement (Lorg/apache/kafka/clients/producer/RecordMetadata;Ljava/lang/Exception;)V
+	public fun onSend (Lorg/apache/kafka/clients/producer/ProducerRecord;)Lorg/apache/kafka/clients/producer/ProducerRecord;
+}
+
+public final class no/novari/kafka/starter/producer/OriginHeaderProducerInterceptor$Companion {
+}
+
