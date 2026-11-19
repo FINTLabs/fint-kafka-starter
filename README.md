@@ -16,6 +16,21 @@ It is a thin layer on top of Spring Kafka and replaces [fint-kafka](https://gith
 
 The public API is locked with an ABI dump in `api/`. After an intended API change, run `./gradlew apiDump` and commit the result.
 
+## Dependency locking
+
+[Gradle dependency locking](https://docs.gradle.org/current/userguide/dependency_locking.html) pins all direct and
+transitive versions in `gradle.lockfile`, so every PR shows the transitive changes it brings. Gradle plugins are not
+locked, because Dependabot only updates `gradle.lockfile`; their versions are pinned in `gradle/libs.versions.toml`.
+
+Dependabot updates the lockfile in its own PRs. After any manual change that affects dependency resolution (versions,
+constraints, added or removed dependencies), regenerate it and commit the result:
+
+```shell
+./gradlew dependencies --write-locks
+```
+
+If you forget, the build fails with "is not part of the dependency lock state".
+
 ## Release
 
 Publishing a GitHub release publishes the artifact to `https://repo.fintlabs.no/releases`. The version is the tag without
