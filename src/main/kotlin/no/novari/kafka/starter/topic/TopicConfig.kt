@@ -36,6 +36,9 @@ public class EntityTopicConfig(
     /**
      * `retention.ms`. The default `null` gives cleanup policy `compact`, which keeps the last value per key **forever**.
      * Set it to also delete old records (`delete,compact`), as `lastValueRetentionTime(...)` did in fint-kafka 6.
+     *
+     * **Warning when migrating from fint-kafka 6:** a topic created with `lastValueRetentionTime(...)` changes from
+     * `delete,compact` to `compact` at the next startup if this is left out, and old records are no longer deleted.
      */
     public val lastValueRetention: Duration? = null,
     public val cleanupFrequency: EntityCleanupFrequency = EntityCleanupFrequency.NORMAL,
