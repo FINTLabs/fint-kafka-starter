@@ -61,6 +61,12 @@ dependencies {
     springBootBom(platform(libs.spring.boot.dependencies))
 
     constraints {
+        ktlint(libs.logback.core) {
+            because(
+                "ktlint 1.8.0 brings logback-core 1.3.16, which has CVE-2026-1225, CVE-2026-9828 and " +
+                    "CVE-2026-10532. Only the ktlint tool classpath, not the published library",
+            )
+        }
         implementation(libs.lz4.java) {
             because("kafka-clients 4.2.2 brings lz4-java 1.11.2, which has known vulnerabilities fixed in 1.11.4")
         }
