@@ -36,6 +36,10 @@ kotlin {
         // Spring Boot 4.1 manages Kotlin 2.3, so apps may run with a 2.3 stdlib.
         apiVersion = KotlinVersion.KOTLIN_2_3
     }
+    // The stdlib version Spring Boot manages, not the Kotlin plugin's, so the library does not upgrade it in apps.
+    coreLibrariesVersion =
+        libs.versions.kotlin.stdlib
+            .get()
 }
 
 ktlint {
@@ -46,8 +50,15 @@ dependencyLocking {
     lockAllConfigurations()
 }
 
+// The Spring Boot BOM sets versions in this build only. It is not published, so it cannot change the app's Spring Boot
+// or Kotlin version. versionMapping below publishes the resolved versions instead.
+val springBootBom = configurations.dependencyScope("springBootBom")
+listOf("compileClasspath", "runtimeClasspath", "testCompileClasspath", "testRuntimeClasspath").forEach {
+    configurations.named(it) { extendsFrom(springBootBom.get()) }
+}
+
 dependencies {
-    implementation(platform(libs.spring.boot.dependencies))
+    springBootBom(platform(libs.spring.boot.dependencies))
 
     constraints {
         implementation(libs.lz4.java) {

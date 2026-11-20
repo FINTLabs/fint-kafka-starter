@@ -1,6 +1,8 @@
 [versions]
 spring-boot = "4.1.2"
 kotlin = "2.4.21"
+# The Kotlin version in the Spring Boot BOM. Keep it in step with spring-boot.
+kotlin-stdlib = "2.3.21"
 ktlint-gradle = "14.2.0"
 ktlint-cli = "1.8.0"
 binary-compatibility-validator = "0.18.2"
