@@ -6,7 +6,7 @@ kotlin-stdlib = "2.3.21"
 ktlint-gradle = "14.2.0"
 ktlint-cli = "1.8.0"
 binary-compatibility-validator = "0.18.2"
-lz4 = "1.14.0"
+lz4 = "1.14.1"
 snappy = "1.1.10.12"
 logback = "1.6.8"
 
