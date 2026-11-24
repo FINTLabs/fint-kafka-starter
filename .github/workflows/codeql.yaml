@@ -16,5 +16,5 @@ jobs:
       contents: read
       packages: read
       security-events: write
-    uses: FINTLabs/fint-flyt-github-workflows/.github/workflows/java-codeql.yaml@main
+    uses: FINTLabs/fint-flyt-github-workflows/.github/workflows/java-codeql.yaml@1508232829d2478b588e004c224c804a955e2a9a # v1.0.0
     secrets: inherit
