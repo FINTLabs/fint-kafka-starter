@@ -13,7 +13,7 @@ and `CommonErrorHandler`. On top of Spring Kafka, the starter gives:
 
 **Status:** under development. Not ready for use yet.
 
-- Requires Spring Boot 4.1+, Jackson 3 and Java 21+
+- Requires Spring Boot 4.2+, Jackson 3 and Java 21+
 - Migrating from fint-kafka: see [Migrating from fint-kafka](docs/migrating-from-fint-kafka.md)
 
 ## Usage

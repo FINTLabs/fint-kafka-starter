@@ -26,7 +26,7 @@ names and topic config must not change. The guide shows how to check that.
 
 ## Before you start
 
-- The app runs Spring Boot 4.1+, Jackson 3 and Java 21+. fint-kafka 6 does not run on Spring Boot 4, so this is done in
+- The app runs Spring Boot 4.2+, Jackson 3 and Java 21+. fint-kafka 6 does not run on Spring Boot 4, so this is done in
   the same change as the Spring Boot upgrade.
 - The app does not use request/reply. See [Request/reply is not included](#requestreply-is-not-included).
 - Libraries the app uses Kafka through, such as `fint-flyt-kafka`, are migrated first. See
@@ -528,7 +528,7 @@ kafkaTemplate.send(userTopic.getName(), key, user);
 
 ## Checklist
 
-- [ ] Spring Boot 4.1+, Jackson 3, Java 21+.
+- [ ] Spring Boot 4.2+, Jackson 3, Java 21+.
 - [ ] Wrapper libraries migrated, no request/reply.
 - [ ] `no.novari:kafka` replaced by `no.novari:kafka-starter`; component scans that only served fint-kafka removed.
 - [ ] Properties updated, and other `spring.kafka.*` keys checked.

@@ -33,8 +33,8 @@ kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
         freeCompilerArgs.add("-Xjdk-release=21")
-        // Spring Boot 4.1 manages Kotlin 2.3, so apps may run with a 2.3 stdlib.
-        apiVersion = KotlinVersion.KOTLIN_2_3
+        // Spring Boot 4.2 manages Kotlin 2.4, so apps may run with a 2.4 stdlib.
+        apiVersion = KotlinVersion.KOTLIN_2_4
     }
     // The stdlib version Spring Boot manages, not the Kotlin plugin's, so the library does not upgrade it in apps.
     coreLibrariesVersion =
@@ -68,11 +68,11 @@ dependencies {
             )
         }
         implementation(libs.lz4.java) {
-            because("kafka-clients 4.2.2 brings lz4-java 1.11.2, which has known vulnerabilities fixed in 1.11.4")
+            because("kafka-clients 4.4.0 brings lz4-java 1.11.2, which has known vulnerabilities fixed in 1.11.4")
         }
         implementation(libs.snappy.java) {
             because(
-                "kafka-clients 4.2.2 brings snappy-java 1.1.10.7, " +
+                "kafka-clients 4.4.0 brings snappy-java 1.1.10.7, " +
                     "which has CVE-2026-93451, CVE-2026-108106 and CVE-2026-116590 fixed in 1.1.10.12",
             )
         }
