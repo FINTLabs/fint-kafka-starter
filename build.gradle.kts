@@ -67,16 +67,14 @@ dependencies {
                     "CVE-2026-10532. Only the ktlint tool classpath, not the published library",
             )
         }
-        implementation(libs.lz4.java) {
-            because("kafka-clients 4.4.0 brings lz4-java 1.11.2, which has known vulnerabilities fixed in 1.11.4")
-        }
-        implementation(libs.snappy.java) {
-            because(
-                "kafka-clients 4.4.0 brings snappy-java 1.1.10.7, " +
-                    "which has CVE-2026-93451, CVE-2026-108106 and CVE-2026-116590 fixed in 1.1.10.12",
-            )
-        }
     }
+    // Runtime dependencies, not constraints: Maven ignores <dependencyManagement> in a dependency's POM, so only a
+    // dependency raises the version for Maven consumers.
+    // kafka-clients 4.4.0 brings lz4-java 1.11.2, which has known vulnerabilities fixed in 1.11.4.
+    runtimeOnly(libs.lz4.java)
+    // kafka-clients 4.4.0 brings snappy-java 1.1.10.7, which has CVE-2026-93451, CVE-2026-108106 and CVE-2026-116590
+    // fixed in 1.1.10.12.
+    runtimeOnly(libs.snappy.java)
 
     api("org.springframework.boot:spring-boot-starter-kafka")
     api("org.springframework.boot:spring-boot-starter-jackson")
