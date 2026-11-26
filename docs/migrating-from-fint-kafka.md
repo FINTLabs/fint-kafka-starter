@@ -75,6 +75,10 @@ config and Kustomize overlays for other `spring.kafka.*` keys: they take effect 
 
 New: `novari.kafka.consumer.group-id-check` (`WARN`, `FAIL` or `OFF`), see [Group ids](#group-ids).
 
+Changed: `fetch.max.bytes` (total per fetch) is Kafka's default of 50 MiB. fint-kafka 6 set it to 3 MiB. The limit per
+partition (`max.partition.fetch.bytes`) is still 3 MiB. Set `spring.kafka.consumer.properties[fetch.max.bytes]` to
+keep the old limit.
+
 ## API translation
 
 | fint-kafka 6                                                                                                  | fint-kafka-starter                                                                     |
@@ -152,6 +156,10 @@ Boot's `KafkaAdmin` creates missing topics and updates the config of existing on
 start. To create topics at runtime, for example per org, call `kafkaAdmin.createOrModifyTopics(topics.newTopic(...))`.
 
 Partitions can only be increased. A `NewTopic` with fewer partitions than the topic has does not reduce them.
+
+As in fint-kafka 6, the app fails at startup if a topic cannot be created or updated (`spring.kafka.admin.fail-fast`
+is `true`). Tests that declare `NewTopic` beans therefore need a broker (`@EmbeddedKafka`), or
+`spring.kafka.admin.fail-fast: false`.
 
 ### Config
 
@@ -293,8 +301,9 @@ reprocesses the whole topic, with `latest` it skips records.
 - Keep `spring.kafka.consumer.group-id` and its Kustomize overrides as they are.
 - Copy suffixes exactly. fint-kafka 6 added no separator, so `withSuffix("cache")` and `withSuffix("-cache")` are
   different groups.
-- The app fails at startup if it has listeners and `spring.kafka.consumer.group-id` is not set. fint-kafka 6 used the
-  string `"null"` as base.
+- The app fails at startup if it has listeners and `spring.kafka.consumer.group-id` is not set or blank. fint-kafka 6
+  used the string `"null"` as base.
+- A blank suffix gives the base group id, as in fint-kafka 6.
 
 ### The `@KafkaListener(id)` pitfall
 

@@ -11,7 +11,7 @@ import org.springframework.util.unit.DataSize
 
 /**
  * Adds the fint defaults as the property source with the lowest precedence, so they show in `/actuator/env` and any
- * `spring.kafka.*` key set by the application wins.
+ * `spring.kafka.*` key set by the application wins, including `SpringApplication.setDefaultProperties`.
  */
 internal class NovariKafkaDefaultsEnvironmentPostProcessor :
     EnvironmentPostProcessor,
@@ -36,6 +36,8 @@ internal class NovariKafkaDefaultsEnvironmentPostProcessor :
                     OriginHeaderProducerInterceptor::class.java.name,
                 )
                 put("spring.kafka.admin.modify-topic-configs", "true")
+                // As in fint-kafka 6, where topics were created during startup: fail startup if they cannot be created.
+                put("spring.kafka.admin.fail-fast", "true")
                 put("spring.kafka.listener.observation-enabled", "true")
                 put("spring.kafka.template.observation-enabled", "true")
                 if (applicationId != null) {
@@ -47,7 +49,10 @@ internal class NovariKafkaDefaultsEnvironmentPostProcessor :
                     put("spring.kafka.client-id", listOfNotNull(applicationId, orgId).joinToString("-"))
                 }
             }
-        environment.propertySources.addLast(MapPropertySource(PROPERTY_SOURCE_NAME, defaults))
+        // Skip keys the application already sets. Boot only moves SpringApplication.setDefaultProperties last after
+        // this runs, so without the filter those defaults would lose to ours.
+        val missing = defaults.filterKeys { !environment.containsProperty(it) }
+        environment.propertySources.addLast(MapPropertySource(PROPERTY_SOURCE_NAME, missing))
     }
 
     private companion object {

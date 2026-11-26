@@ -51,7 +51,9 @@ internal class NovariKafkaAutoConfiguration {
     /** The bean name is used in SpEL: `#{@kafkaGroupIds.withSuffix('-cache')}`. */
     @Bean
     @ConditionalOnMissingBean
-    fun kafkaGroupIds(kafkaProperties: KafkaProperties) = KafkaGroupIds(kafkaProperties.consumer.groupId)
+    fun kafkaGroupIds(kafkaProperties: KafkaProperties) =
+        // A blank group id counts as not set: every group id starts with "", so the prefix check would pass anything.
+        KafkaGroupIds(kafkaProperties.consumer.groupId?.takeIf { it.isNotBlank() })
 
     @Bean
     fun novariKafkaGroupIdReporter(

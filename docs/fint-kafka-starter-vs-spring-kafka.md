@@ -4,7 +4,7 @@ fint-kafka-starter uses Spring Boot's Kafka beans (`KafkaTemplate`, the default 
 `KafkaAdmin`), but changes some defaults. Most of them keep the behaviour of fint-kafka 6.
 
 The `spring.kafka.*` defaults are added as the property source with the lowest precedence, named `novariKafkaDefaults`.
-They show in `/actuator/env`, and any value the app sets wins.
+They show in `/actuator/env`, and any value the app sets wins, also from `SpringApplication.setDefaultProperties`.
 
 ## Defaults
 
@@ -18,11 +18,13 @@ They show in `/actuator/env`, and any value the app sets wins.
 | Producer interceptor                        | `OriginHeaderProducerInterceptor`                   | none                                   |
 | `client.id`                                 | `<application-id>-<org-id>`                         | `consumer-<group>-<n>`, `producer-<n>` |
 | `spring.kafka.admin.modify-topic-configs`   | `true`                                              | `false`                                |
+| `spring.kafka.admin.fail-fast`              | `true`                                              | `false`                                |
 | `spring.kafka.listener.observation-enabled` | `true`                                              | `false`                                |
 | `spring.kafka.template.observation-enabled` | `true`                                              | `false`                                |
 | Topic replicas in `KafkaTopics.newTopic`    | 2                                                   | broker default                         |
 
-Everything else is Spring Boot's and Kafka's default, for example `linger.ms` = 5, one shared producer, and
+Everything else is Spring Boot's and Kafka's default, for example `linger.ms` = 5, `fetch.max.bytes` = 50 MiB
+(fint-kafka 6 set 3 MiB), one shared producer, and
 `DefaultErrorHandler` with 10 attempts without pause, then log and skip.
 
 ## Overriding a default
@@ -82,6 +84,14 @@ replaces the interceptor, so list it there too if the app adds its own intercept
 
 `spring.kafka.admin.modify-topic-configs: true` makes `KafkaAdmin` update the config of existing topics to match the
 `NewTopic` beans at startup, as fint-kafka 6 did. Set it to `false` to only create missing topics.
+
+### Startup fails when topics cannot be created
+
+`spring.kafka.admin.fail-fast: true` stops the app at startup when `KafkaAdmin` cannot create or update the `NewTopic`
+beans, for example when the broker is unreachable or the app lacks topic permissions. fint-kafka 6 created topics
+during startup and failed the same way. Without it, the app starts and becomes ready with missing topics. Set it to
+`false` if the app should start without Kafka. Tests that declare `NewTopic` beans need a broker (`@EmbeddedKafka`)
+or `spring.kafka.admin.fail-fast: false`.
 
 ### Observation
 

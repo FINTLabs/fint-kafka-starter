@@ -146,6 +146,25 @@ class GroupIdsTest {
     }
 
     @Test
+    fun `fails at startup with a blank base group id when there are listeners`() {
+        runnerWithoutBase
+            .withBean(IdListener::class.java)
+            .withPropertyValues("spring.kafka.consumer.group-id=", "novari.kafka.consumer.group-id-check=FAIL")
+            .run {
+                assertThat(it).hasFailed()
+                assertThat(it.startupFailure).hasMessageStartingWith(
+                    "spring.kafka.consumer.group-id is not set.",
+                )
+            }
+    }
+
+    @Test
+    fun `a blank suffix gives the base group id, as in fint-kafka 6`() {
+        assertThat(KafkaGroupIds("test").withSuffix(" ")).isEqualTo("test")
+        assertThat(KafkaGroupIds("test").withSuffix("")).isEqualTo("test")
+    }
+
+    @Test
     fun `starts without a base group id when there are no listeners`() {
         runnerWithoutBase.run { assertThat(it).hasNotFailed() }
     }

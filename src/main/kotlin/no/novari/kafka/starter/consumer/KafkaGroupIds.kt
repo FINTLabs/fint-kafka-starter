@@ -11,8 +11,11 @@ import java.util.UUID
 public class KafkaGroupIds internal constructor(
     internal val base: String?,
 ) {
-    /** The base group id and [suffix], without a separator: `withSuffix("-cache")` gives `<base>-cache`. */
-    public fun withSuffix(suffix: String): String = requiredBase() + suffix
+    /**
+     * The base group id and [suffix], without a separator: `withSuffix("-cache")` gives `<base>-cache`. A blank suffix
+     * gives the base group id, as in fint-kafka 6 (`StringUtils.hasText`).
+     */
+    public fun withSuffix(suffix: String): String = if (suffix.isBlank()) requiredBase() else requiredBase() + suffix
 
     /** The base group id and a random UUID, without a separator. Gives a new consumer group on every start. */
     public fun unique(): String = withSuffix(UUID.randomUUID().toString())

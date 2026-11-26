@@ -76,6 +76,20 @@ class NovariKafkaAutoConfigurationTest {
     }
 
     @Test
+    fun `SpringApplication default properties override the fint default`() {
+        val application =
+            SpringApplication(EmptyConfiguration::class.java).apply {
+                setDefaultProperties(mapOf("spring.kafka.consumer.auto-offset-reset" to "latest"))
+            }
+        application.run().use {
+            assertThat(it.environment.getProperty("spring.kafka.consumer.auto-offset-reset")).isEqualTo("latest")
+        }
+    }
+
+    @Configuration
+    class EmptyConfiguration
+
+    @Test
     fun `leaves fetch max bytes at the Kafka default`() {
         runner.run { assertThat(it.consumerConfig()).doesNotContainKey(ConsumerConfig.FETCH_MAX_BYTES_CONFIG) }
     }
@@ -239,6 +253,9 @@ class NovariKafkaAutoConfigurationTest {
                 },
                 Default("spring.kafka.admin.modify-topic-configs", "true", "false") {
                     it.kafkaProperties().admin.isModifyTopicConfigs
+                },
+                Default("spring.kafka.admin.fail-fast", "true", "false") {
+                    it.kafkaProperties().admin.isFailFast
                 },
                 Default("spring.kafka.listener.observation-enabled", "true", "false") {
                     it
