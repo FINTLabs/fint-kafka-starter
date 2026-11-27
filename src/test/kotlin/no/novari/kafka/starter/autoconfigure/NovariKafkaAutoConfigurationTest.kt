@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.config.BeanExpressionContext
+import org.springframework.beans.factory.getBean
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration
@@ -104,7 +105,7 @@ class NovariKafkaAutoConfigurationTest {
     @Test
     fun `application-id falls back to spring application name`() {
         runnerWithoutApplicationId.withPropertyValues("spring.application.name=name").run {
-            assertThat(it.getBean(NovariKafkaProperties::class.java).applicationId).isEqualTo("name")
+            assertThat(it.getBean<NovariKafkaProperties>().applicationId).isEqualTo("name")
             assertThat(it.consumerConfig()[ConsumerConfig.CLIENT_ID_CONFIG]).isEqualTo("name")
             assertThat(it.producerConfig()[OriginHeaderProducerInterceptor.ORIGIN_APPLICATION_ID_PRODUCER_CONFIG])
                 .isEqualTo("name")
@@ -177,7 +178,7 @@ class NovariKafkaAutoConfigurationTest {
     @Test
     fun `topics get 2 replicas by default`() {
         runner.run {
-            val topics = it.getBean(KafkaTopics::class.java)
+            val topics = it.getBean<KafkaTopics>()
             val topic = topics.newTopic(topics.event("x", "afk-no", "flyt"), EventTopicConfig(Duration.ofDays(1)))
             assertThat(topic.replicationFactor()).isEqualTo(2.toShort())
         }
@@ -207,15 +208,15 @@ class NovariKafkaAutoConfigurationTest {
 
     companion object {
         private fun AssertableApplicationContext.consumerConfig() =
-            getBean(DefaultKafkaConsumerFactory::class.java).configurationProperties
+            getBean<DefaultKafkaConsumerFactory<*, *>>().configurationProperties
 
         @Suppress("UNCHECKED_CAST")
         private fun AssertableApplicationContext.producerFactory() =
-            getBean(DefaultKafkaProducerFactory::class.java) as DefaultKafkaProducerFactory<Any, Any>
+            getBean<DefaultKafkaProducerFactory<*, *>>() as DefaultKafkaProducerFactory<Any, Any>
 
         private fun AssertableApplicationContext.producerConfig() = producerFactory().configurationProperties
 
-        private fun AssertableApplicationContext.kafkaProperties() = getBean(KafkaProperties::class.java)
+        private fun AssertableApplicationContext.kafkaProperties() = getBean<KafkaProperties>()
 
         @JvmStatic
         fun defaults() =

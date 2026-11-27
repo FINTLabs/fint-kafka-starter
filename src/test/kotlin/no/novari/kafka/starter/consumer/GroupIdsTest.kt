@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.springframework.beans.factory.getBean
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration
 import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration
@@ -204,7 +205,7 @@ class GroupIdsTest {
         private val UNIQUE = Regex("test[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}").toPattern()
 
         private fun AssertableApplicationContext.groupIds() =
-            getBean(KafkaListenerEndpointRegistry::class.java).listenerContainers.map { it.groupId }
+            getBean<KafkaListenerEndpointRegistry>().listenerContainers.map { it.groupId }
 
         @JvmStatic
         fun golden() =
