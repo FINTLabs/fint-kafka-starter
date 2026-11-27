@@ -166,8 +166,8 @@ class ConsumerTracking(
             kafkaConsumerProperties[TrackingConsumerInterceptor.TRACKING_CONFIG] = this@ConsumerTracking
             setCommitCallback { _, exception -> exception?.let { add(OffsetCommitFailed(it.toReport())) } }
         }
-        container.setRecordInterceptor(recordInterceptor())
-        container.setBatchInterceptor(batchInterceptor())
+        container.recordInterceptor = recordInterceptor()
+        container.batchInterceptor = batchInterceptor()
         (errorHandler as? FailedRecordProcessor)?.setRetryListeners(retryListener())
         container.commonErrorHandler = errorHandler
     }
